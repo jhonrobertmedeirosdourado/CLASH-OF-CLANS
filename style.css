@@ -1,11 +1,25 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+
+/* ---------- Variáveis centralizadas ---------- */
+:root
+{
+  --card-w: 300px;
+  --card-h: 400px;
+  --gap: 40px;
+  --radius: 20px;
+  --speed: 0.5s;
+  --ease: cubic-bezier(0.34, 1.56, 0.64, 1); /* leve efeito elástico */
+  --lift: -60px;          /* quanto o personagem sobe no hover */
+  --tilt-depth: 60px;     /* quanto o personagem "salta" para fora no 3D */
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-body 
+body
 {
   display: flex;
   justify-content: center;
@@ -20,23 +34,47 @@ body
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 40px;
+  gap: var(--gap);
   padding: 20px;
-  min-height: 400px;
+  min-height: var(--card-h);
 }
+
+/* ---------- Carta ---------- */
 .container .card
 {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
   position: relative;
-  width: 300px;
+  width: var(--card-w);
   max-width: 100%;
-  height: 400px;
+  height: var(--card-h);
+  outline: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.2s ease-out;
+  /* entrada escalonada (usa opacity e translate para não brigar com o transform da inclinação) */
+  animation: enter 0.7s var(--ease) both;
+  animation-delay: calc(var(--i) * 150ms);
 }
+@keyframes enter
+{
+  from { opacity: 0; translate: 0 40px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* ---------- Fundo da carta ---------- */
 .container .card .imgBx
 {
   position: absolute;
   inset: 0;
-  background: #222;
-  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--clr) -30%, #1a1a1a 70%);
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow var(--speed);
 }
 .container .card .imgBx img
 {
@@ -46,32 +84,83 @@ body
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: 0.5s;
-  border-radius: 20px;
+  transition: var(--speed);
+  border-radius: var(--radius);
 }
-.container .card:hover .imgBx img
+
+/* brilho holográfico que segue o mouse */
+.container .card .imgBx::after
 {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.35), transparent 45%),
+    linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.12) 45%, rgba(120,200,255,0.18) 55%, transparent 70%);
+  mix-blend-mode: screen;
   opacity: 0;
+  transition: opacity var(--speed);
+  pointer-events: none;
 }
+
+/* ---------- Personagem 3D ---------- */
 .container .card .c3d
 {
   position: absolute;
   z-index: 1000;
   opacity: 0;
-  transition: 0.5s;
+  transition: var(--speed) var(--ease);
   transform: translateY(0);
+  filter: drop-shadow(0 0 0 transparent);
 }
-.container .card:hover .c3d
+
+/* ---------- Stats ---------- */
+.container .card .stats
 {
-  opacity: 1;
-  transform: translateY(-80px);   /* era -25px; aumente para subir mais */
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1001;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: var(--speed) var(--ease);
+}
+.container .card .stats li
+{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 110px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  color: #fff;
+  background: rgba(17, 17, 17, 0.75);
+  border-left: 3px solid var(--clr);
+  border-radius: 8px;
+}
+
+/* ---------- Nome + descrição ---------- */
+.container .card .info
+{
+  position: absolute;
+  right: -30px;
+  bottom: -10px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 240px;
+  opacity: 0;
+  transition: var(--speed) var(--ease);
 }
 .container .card h2
 {
-  position: absolute;
-  right: -30px;   /* quanto mais negativo, mais para a direita */
-  bottom: 10px;
-  z-index: 1001;
   color: #fff;
   font-size: 1.75em;
   font-weight: 600;
@@ -79,12 +168,76 @@ body
   background: var(--clr);
   padding: 5px 20px;
   border-radius: 10px;
-  transition: 0.5s;
-  opacity: 0;
 }
-.card:hover h2
+.container .card .info p
 {
-  bottom: 10px;   /* era 30px */
-  opacity: 1;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: right;
+  color: #e6e6e6;
+  background: rgba(17, 17, 17, 0.85);
+  padding: 8px 12px;
+  border-radius: 10px;
 }
 
+/* ---------- Estado ativo: hover, foco do teclado ou toque (.active) ---------- */
+.container .card:is(:hover, :focus-visible, .active) .imgBx img
+{
+  opacity: 0;
+}
+.container .card:is(:hover, :focus-visible, .active) .imgBx
+{
+  box-shadow:
+    0 0 0 2px var(--clr),
+    0 0 35px 4px color-mix(in srgb, var(--clr) 55%, transparent);
+}
+.container .card:is(:hover, :focus-visible, .active) .imgBx::after
+{
+  opacity: 1;
+}
+.container .card:is(:hover, :focus-visible, .active) .c3d
+{
+  opacity: 1;
+  transform: translateY(var(--lift)) translateZ(var(--tilt-depth));
+  filter: drop-shadow(0 25px 20px rgba(0, 0, 0, 0.6));
+  animation: float 2.4s ease-in-out 0.6s infinite;
+}
+.container .card:is(:hover, :focus-visible, .active) .stats
+{
+  opacity: 1;
+  transform: translateX(0) translateZ(40px);
+}
+.container .card:is(:hover, :focus-visible, .active) .info
+{
+  bottom: 20px;
+  opacity: 1;
+  transform: translateZ(40px);
+}
+.container .card:focus-visible
+{
+  outline: 2px solid var(--clr);
+  outline-offset: 6px;
+}
+
+/* personagem flutuando (usa "translate" para somar com o transform do hover) */
+@keyframes float
+{
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -10px; }
+}
+
+/* ---------- Telas pequenas e acessibilidade ---------- */
+@media (max-width: 480px)
+{
+  :root { --gap: 60px; }
+  .container .card .info { right: -10px; }
+}
+@media (prefers-reduced-motion: reduce)
+{
+  .container .card,
+  .container .card .c3d
+  {
+    animation: none !important;
+  }
+  .container .card { transition: none; }
+}
