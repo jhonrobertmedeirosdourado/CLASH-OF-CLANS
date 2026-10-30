@@ -1,1 +1,90 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body 
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #111;
+  padding: 20px 0;
+}
+.container
+{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px;
+  min-height: 400px;
+}
+.container .card
+{
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+  height: 400px;
+}
+.container .card .imgBx
+{
+  position: absolute;
+  inset: 0;
+  background: #222;
+  border-radius: 20px;
+}
+.container .card .imgBx img
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.5s;
+  border-radius: 20px;
+}
+.container .card:hover .imgBx img
+{
+  opacity: 0;
+}
+.container .card .c3d
+{
+  position: absolute;
+  z-index: 1000;
+  opacity: 0;
+  transition: 0.5s;
+  transform: translateY(0);
+}
+.container .card:hover .c3d
+{
+  opacity: 1;
+  transform: translateY(-80px);   /* era -25px; aumente para subir mais */
+}
+.container .card h2
+{
+  position: absolute;
+  right: -30px;   /* quanto mais negativo, mais para a direita */
+  bottom: 10px;
+  z-index: 1001;
+  color: #fff;
+  font-size: 1.75em;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: var(--clr);
+  padding: 5px 20px;
+  border-radius: 10px;
+  transition: 0.5s;
+  opacity: 0;
+}
+.card:hover h2
+{
+  bottom: 10px;   /* era 30px */
+  opacity: 1;
+}
 
