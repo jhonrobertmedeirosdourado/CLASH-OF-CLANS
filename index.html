@@ -1,28 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS Card Hover Effects</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="card" style="--clr:#e9a643;">
+
+        <div class="card" tabindex="0" style="--clr:#e9a643; --i:0;">
             <div class="imgBx">
-                <img src="old.jpg">
+                <img src="old.jpg" alt="Bárbaro em sua forma original">
             </div>
-            <img src="old3d.png" class="c3d">
-            <h2>Barbarians</h2>
+            <img src="old3d.png" class="c3d" alt="Bárbaro em 3D">
+            <ul class="stats">
+                <li>❤️ Vida <b>45</b></li>
+                <li>⚔️ Dano <b>8</b></li>
+                <li>💧 Custo <b>3</b></li>
+            </ul>
+            <div class="info">
+                <h2>Barbarians</h2>
+                <p>Guerreiros ferozes que avançam sem medo contra qualquer defesa.</p>
             </div>
-            <div class="card" style="--clr:#ad4a9d;">
+        </div>
+
+        <div class="card" tabindex="0" style="--clr:#ad4a9d; --i:1;">
             <div class="imgBx">
-                <img src="archer.jpg">
+                <img src="arqueira_ceu.jpg" alt="Arqueira em sua forma original">
             </div>
-            <img src="archer3d.png" class="c3d">
-            <h2>Archers</h2>
+            <img src="archer3d.png" class="c3d" alt="Arqueira em 3D">
+            <ul class="stats">
+                <li>❤️ Vida <b>20</b></li>
+                <li>⚔️ Dano <b>7</b></li>
+                <li>💧 Custo <b>2</b></li>
+            </ul>
+            <div class="info">
+                <h2>Archers</h2>
+                <p>Atiradoras ágeis que acertam alvos de longe e se mantêm fora de perigo.</p>
             </div>
-            </div>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
